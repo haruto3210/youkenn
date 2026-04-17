@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>こんにちは晴人</title>
+  <style>
+    :root {
+      --bg: #05060a;
+      --fg: #f5f5f5;
+      --accent: #4fc3f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    .wrapper {
+      text-align: center;
+      padding: 2rem;
+      max-width: 90vw;
+    }
+
+    .glow-frame {
+      display: inline-block;
+      padding: 1.5rem 2.5rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      position: relative;
+      background: radial-gradient(circle at top left, rgba(79, 195, 247, 0.18), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(129, 140, 248, 0.18), transparent 55%);
+      box-shadow:
+        0 0 40px rgba(79, 195, 247, 0.35),
+        0 0 80px rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+    }
+
+    .glow-frame::before {
+      content: "";
+      position: absolute;
+      inset: -150%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(79, 195, 247, 0.0),
+        rgba(79, 195, 247, 0.7),
+        rgba(129, 140, 248, 0.0),
+        rgba(79, 195, 247, 0.7),
+        rgba(79, 195, 247, 0.0)
+      );
+      animation: border-spin 8s linear infinite;
+      opacity: 0.7;
+      mix-blend-mode: screen;
+    }
+
+    .glow-frame::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 1.4rem;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #020617 60%);
+      z-index: 0;
+    }
+
+    @keyframes border-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .headline {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .message {
+      font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.4;
+      min-height: 3em;
+      color: var(--fg);
+      text-shadow:
+        0 0 12px rgba(15, 23, 42, 0.9),
+        0 0 24px rgba(79, 195, 247, 0.45);
+      animation: text-pulse 2.4s ease-in-out infinite;
+      white-space: pre-wrap;
+    }
+
+    @keyframes text-pulse {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.95;
+      }
+      50% {
+        transform: translateY(-2px);
+        opacity: 1;
+      }
+    }
+
+    .message.fade-out {
+      animation: fade-out 0.6s ease forwards;
+    }
+
+    .message.fade-in {
+      animation: fade-in 0.6s ease forwards;
+    }
+
+    @keyframes fade-out {
+      to {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+        filter: blur(2px);
+      }
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(-6px) scale(1.02);
+        filter: blur(2px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    .sub {
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.9);
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 0.7ch;
+      text-align: left;
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .glow-frame::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="glow-frame">
+      <div class="content">
+        <div class="headline">HELLO, WORLD</div>
+        <div id="message" class="message">
+          Loading<span class="cursor">|</span>
+        </div>
+        <div id="sub" class="sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messageEl = document.getElementById("message");
+    const subEl = document.getElementById("sub");
+
+    const nonJapaneseGreetings = [
+      "Hello, this is Haruto from everywhere in the world.",
+      "Bonjour, ici Haruto connecté au monde entier.",
+      "Hola, soy Haruto saludando al mundo.",
+      "Guten Tag, hier ist Haruto mit einem Gruß an die Welt.",
+      "Ciao, sono Haruto che saluta il mondo.",
+      "안녕하세요, 전 세계와 연결된 하루토입니다.",
+      "你好，這裡是與世界相連的晴人。"
+    ];
+
+    const japaneseGreeting = "世界中のこんにちわ、晴人です。";
+    const finalQuestion = "用件は何でしょうか？";
+
+    function setMessage(text) {
+      messageEl.classList.remove("fade-in", "fade-out");
+      void messageEl.offsetWidth;
+      messageEl.classList.add("fade-out");
+      setTimeout(() => {
+        messageEl.textContent = text;
+        messageEl.classList.remove("fade-out");
+        void messageEl.offsetWidth;
+        messageEl.classList.add("fade-in");
+      }, 220);
+    }
+
+    function startSequence() {
+      let index = 0;
+      const startTime = performance.now();
+
+      const interval = setInterval(() => {
+        const elapsed = (performance.now() - startTime) / 1000;
+
+        if (elapsed >= 10) {
+          clearInterval(interval);
+          setMessage(japaneseGreeting);
+          subEl.textContent = "（日本語モード）";
+          setTimeout(() => {
+            setMessage(finalQuestion);
+            subEl.textContent = "";
+          }, 5000);
+          return;
+        }
+
+        const text = nonJapaneseGreetings[index % nonJapaneseGreetings.length];
+        setMessage(text);
+        subEl.textContent = "Multilingual greeting phase";
+        index++;
+      }, 1200);
+    }
+
+    window.addEventListener("load", () => {
+      setTimeout(startSequence, 600);
+    });
+  </script>
+</body>
+</html>
